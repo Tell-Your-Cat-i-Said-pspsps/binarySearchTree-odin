@@ -14,8 +14,6 @@ class Tree {
       return a - b;
     });
     this.root = buildTree(this.intialArray);
-    this.balanced = true;
-    this.treeHeight = 1;
   }
   //insert a new node with a given value if not found in the tree
   insert(value, current = this.root) {
@@ -148,55 +146,32 @@ class Tree {
   }
 
   // get the tree height and check if tree is balanced or not
-  treeInfo(current = this.root) {
-    let sumLeft = 0;
-    let sumRight = 0;
-    let isBalanced = true;
+  height(current = this.root) {
     if (current === null) {
-      return [0, isBalanced];
-    } else {
-      if (current.left) {
-        sumLeft++;
-      }
-      if (current.right) {
-        sumRight++;
-      }
+      return 0;
     }
-    let childNodeRight = this.treeInfo(current.right);
-    let childNodeLeft = this.treeInfo(current.left);
-    sumRight = sumRight + childNodeRight[0];
-    sumLeft = sumLeft + childNodeLeft[0];
-    if (Math.abs(sumRight - sumLeft) > 1) {
-      isBalanced = false;
-    }
-    if (sumRight > sumLeft) {
-      return [sumRight, isBalanced];
+    let childNodeRight = this.height(current.right);
+    let childNodeLeft = this.height(current.left);
+    if (childNodeRight > childNodeLeft) {
+      return childNodeRight + 1;
     } else {
-      return [sumLeft, isBalanced];
+      return childNodeLeft + 1;
     }
   }
-  // update the treeInfo then check if the tree is balanced or not
-  isBalanced() {
-    let tmp = this.treeInfo();
-    this.balanced = tmp[1];
-
-    return this.balanced;
-  }
-  // update the treeInfo then get the hight
-  height() {
-    let tmp = this.treeInfo();
-    this.treeHeight = tmp[0];
-    return this.treeHeight;
+  isBalanced(current = this.root) {
+    let childNodeLeft = this.height(current.left);
+    let childNodeRight = this.height(current.right);
+    let diff = Math.abs(childNodeRight - childNodeLeft);
+    return diff <= 1 ? true : false;
   }
   depth(node, current = this.root) {
-    // just like find but this time return the cound of the steps till we find the node if not found retur  null
     if (current !== null) {
       if (node.value < current.value) {
         return 1 + this.depth(node, current.left);
       } else if (node.value > current.value) {
         return 1 + this.depth(node, current.right);
       } else if (current.value === node.value) {
-        return 0;
+        return 1;
       }
     } else {
       return null;
